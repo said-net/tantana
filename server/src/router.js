@@ -1,0 +1,7 @@
+module.exports = require('express')()
+    .use('/admin', require('./routers/adminRouter'))
+    .use('/service', require('./routers/serviceRouter'))
+    .use('/order', require('./routers/orderRouter'))
+    .use('/client', require('./routers/clientRouter'))
+    .use('/dashboard', require('./routers/dashboardRouter'))
+    .use('/partner', require('./routers/partnerOrderRouter'))
