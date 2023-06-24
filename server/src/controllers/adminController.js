@@ -90,7 +90,13 @@ module.exports = {
                         role
                     }
                 });
-            });
+            }).catch(err=>{
+                console.log(err);
+                res.send({
+                    ok: false,
+                    msg: "Ushbu raqam avval ishlatilgan!"
+                })
+            })
         }
     },
     getAdmins: async (req, res) => {

@@ -17,6 +17,7 @@ import Clients from "./pages/clients/clients";
 import Partners from "./pages/partners/partners";
 import PartnerOrders from "./pages/partners/partnerorders";
 import PartnerClients from "./pages/partners/clients";
+import PartnerNotes from "./pages/partners/notes";
 function Main() {
     const { refresh, adminId, role } = useSelector(e => e.auth);
     const dp = useDispatch();
@@ -52,7 +53,7 @@ function Main() {
                 <Navbar />
                 <Routes>
                     {role === 'creator' || role === 'operator' ? <Route path="/" element={<Dashboard />} /> : <Route path="/" element={<Partners />} />}
-                    {role === 'creator' || role === 'operator' ? <Route path="/notes" element={<Notes />} /> : null}
+                    {role === 'creator' || role === 'operator' ? <Route path="/notes" element={<Notes />} /> : <Route path="/notes" element={<PartnerNotes />} />}
                     {role === 'creator' ? <Route path="/admins" element={<Operators />} /> : null}
                     {role === 'creator' ? <Route path="/services" element={<Services />} /> : null}
                     {role === 'creator' || role === 'operator' ? <Route path="/orders" element={<Orders />} /> : <Route path="/orders" element={<PartnerOrders />} />}

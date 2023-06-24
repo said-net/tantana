@@ -5,5 +5,6 @@ module.exports = require('mongoose').model('Client', {
     from: {
         type: require('mongoose').Schema.ObjectId,
         ref: 'Admin'
-    }
+    },
+    created: Number
 });

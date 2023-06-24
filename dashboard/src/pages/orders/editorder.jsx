@@ -215,7 +215,7 @@ function OrderEdit({ state, setState }) {
                                 state?.status === 'pending' ?
                                     <div className="flex items-center my-[10px] justify-between w-full">
                                         <Button color="red" onClick={() => setSelect({ ...select, _id: state._id, status: 'reject' })}>RAD ETILDI</Button>
-                                        <Button color="green" onClick={() => setSelect({ ...select, _id: state._id, status: 'success' })}>BAJARILDI</Button>
+                                        <Button disabled={admin?.role !== 'creator'} color="green" onClick={() => setSelect({ ...select, _id: state._id, status: 'success' })}>BAJARILDI</Button>
                                     </div>
                                     : null
                             }

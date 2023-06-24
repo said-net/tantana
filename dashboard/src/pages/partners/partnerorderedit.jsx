@@ -1,12 +1,46 @@
-import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from "@material-tailwind/react";
+import { Button, Chip, Dialog, DialogBody, DialogFooter, DialogHeader } from "@material-tailwind/react";
 import Formatter from "../../components/formatter";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import axios from "axios";
+import { API } from "../../cfg";
+import { toast } from "react-toastify";
+import { setRefreshOrder } from "../../manager/orderManager";
 
 function PartnerOrderEdit({ select, setSelect }) {
+    const { auth } = useSelector(e => e);
+    const [disabled, setDisabled] = useState(false);
+    const dp = useDispatch()
+    function Submit() {
+        setDisabled(true);
+        axios.put(`${API}/partner/set-status/${select._id}`, {}, {
+            headers: {
+                'x-auth-token': `X-Checker ${localStorage.getItem('access')}`
+            }
+        }).then(res => {
+            setDisabled(false);
+            const { ok, msg } = res.data;
+            if (!ok) {
+                toast.error(msg);
+            } else {
+                toast.success(msg);
+                dp(setRefreshOrder());
+                setSelect({ ...select, open: false })
+            }
+        }).catch(() => {
+            toast.warning("Aloqani tekshirib qayta urunib ko'ring!")
+        })
+    }
     return (
         <Dialog open={select?.open} size="xxl" className=" min-w-[375px] flex items-center justify-center bg-[#0000002a] backdrop-blur-[10px]">
             <div className="flex items-center justify-start flex-col w-[500px] p-[10px] rounded-xl bg-white shadow-lg tablet2:w-[95%]">
                 <DialogHeader className="w-full">
-                    <h1 className="text-blue-gray-700 text-[18px]">Buyurtmani ko'rish</h1>
+                    <h1 className="text-blue-gray-700 text-[18px] flex items-center">Buyurtma: {
+                        select?.viewed ?
+                            <Chip color="green" value={"TASDIQLANGAN"} /> :
+                            <Chip color="red" value={"TASDIQLANMAGAN "} />
+
+                    }</h1>
                 </DialogHeader>
                 <DialogBody className="border-y w-full overflow-y-scroll h-[500px]">
                     <div className="flex items-start justify-start flex-col w-full">
@@ -27,8 +61,12 @@ function PartnerOrderEdit({ select, setSelect }) {
                         <p className="w-full">Toifa: <b>HAMKOR</b></p>
                     </div>
                 </DialogBody>
-                <DialogFooter className="w-full" onClick={() => setSelect({ open: false })}>
-                    <Button color="orange">Ortga</Button>
+                <DialogFooter className="w-full" >
+                    <Button disabled={disabled} color="orange" onClick={() => setSelect({ open: false })}>Ortga</Button>
+                    {
+                        !select?.viewed && auth?.role === 'partner' ?
+                            <Button disabled={disabled} onClick={Submit} color="green" className="ml-[10px]">KO'rib chiqildi</Button> : null
+                    }
                 </DialogFooter>
             </div>
         </Dialog>

@@ -31,6 +31,7 @@ module.exports = {
                         phone,
                         name, location,
                         from: req.admin.adminId,
+                        created: moment.now() / 1000
                     }).save().then($saved => {
                         new orderModel({
                             client: $saved._id,
@@ -51,6 +52,7 @@ module.exports = {
                         phone,
                         name, location,
                         from: req.admin.adminId,
+                        created: moment.now() / 1000
                     }).save().then($saved => {
                         new orderModel({
                             client: $saved._id,
@@ -81,6 +83,7 @@ module.exports = {
                             phone,
                             name, location,
                             from: req.admin.adminId,
+                            created: moment.now() / 1000
                         }).save().then($saved => {
                             new orderModel({
                                 client: $saved._id,

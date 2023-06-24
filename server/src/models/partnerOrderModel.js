@@ -14,5 +14,9 @@ module.exports = require('mongoose').model('PartnerOrder', {
     month: Number,
     services: String,
     year: Number,
-    createdAt: Number
+    createdAt: Number,
+    viewed: {
+        type: Boolean,
+        default: true
+    }
 });

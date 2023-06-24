@@ -21,13 +21,23 @@ function Navbar() {
         }, 1500)
     }
     useEffect(() => {
-        axios(`${API}/order/getnotes/now/note`, {
-            headers: {
-                'x-auth-token': `X-Checker ${localStorage.getItem('access')}`
-            }
-        }).then((res) => {
-            setNotes(res?.data?.data?.length);
-        })
+        if (admin?.role === 'partner') {
+            axios(`${API}/partner/get-notes`, {
+                headers: {
+                    'x-auth-token': `X-Checker ${localStorage.getItem('access')}`
+                }
+            }).then((res) => {
+                setNotes(res?.data?.data?.length);
+            });
+        } else {
+            axios(`${API}/order/getnotes/now/note`, {
+                headers: {
+                    'x-auth-token': `X-Checker ${localStorage.getItem('access')}`
+                }
+            }).then((res) => {
+                setNotes(res?.data?.data?.length);
+            });
+        }
     }, []);
     return (
         <div className="flex items-center justify-center h-[100px] w-full">
@@ -37,14 +47,11 @@ function Navbar() {
                     <Chip value={admin?.role === 'creator' ? "BOSHLIQ" : admin?.role === 'operator' ? "OPERATOR" : "HAMKOR"} color="green" className="absolute bottom-[-25px]" />
                 </h1>
                 <div className="flex items-center justify-center">
-                    {
-                        admin?.role === 'operator' || admin?.role === 'creator' ?
-                            <Badge content={!notes ? 0 : notes} color="orange">
-                                <IconButton onClick={() => nv('/notes')} color="green" className="rounded-full text-[25px]">
-                                    <HiBell />
-                                </IconButton>
-                            </Badge> : null
-                    }
+                    <Badge content={!notes ? 0 : notes} color="orange">
+                        <IconButton onClick={() => nv('/notes')} color="green" className="rounded-full text-[25px]">
+                            <HiBell />
+                        </IconButton>
+                    </Badge>
                     <Menu>
                         <MenuHandler>
                             <IconButton className=" text-[25px] mx-[20px]">
