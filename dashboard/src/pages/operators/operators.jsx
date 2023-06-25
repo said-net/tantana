@@ -8,6 +8,7 @@ import { API } from "../../cfg";
 import { toast } from "react-toastify";
 import OperatorEdit from "./editoperator";
 import OperatorDelete from "./deleteoperator";
+import Formatter from "../../components/formatter";
 
 function Operators() {
     const [openAdd, setOpenAdd] = useState(false);
@@ -44,12 +45,12 @@ function Operators() {
                 <h1>OPERATORLAR MAVJUD EMAS</h1>
                 :
                 !search ?
-                    operators.map(({ _id, full_name, phone, role }, index) => {
+                    operators.map(({ _id, full_name, phone, role, balance }, index) => {
                         return (
                             <div key={index} className="flex items-center justify-between w-full rounded-[10px] shadow-[0_10px_20px] shadow-[#0000000b] bg-white p-[10px_20px] mb-[20px] phone:mb-[5px] relative">
                                 <p className="absolute top-0 left-0 p-[0_5px] text-[14px] bg-blue-gray-400 rounded-[10px] text-[white]">{role === 'operator' ? "OPERATOR" : "HAMKOR"}</p>
                                 <h1 className="w-[30%] phone:hidden">{full_name}</h1>
-                                <h1 className="w-[30%] hidden phone:inline">{full_name.length>9?full_name.slice(0,9)+'...':full_name}</h1>
+                                <h1 className="w-[30%] hidden phone:inline">{full_name.length > 9 ? full_name.slice(0, 9) + '...' : full_name}</h1>
                                 <h1 className="w-[30%] phone:text-[13px] text-center">{phone}</h1>
                                 <div className="flex w-[30%] items-center justify-end">
                                     <Menu>
@@ -59,7 +60,7 @@ function Operators() {
                                             </IconButton>
                                         </MenuHandler>
                                         <MenuList>
-                                            <MenuItem className="flex items-center" onClick={() => setSelect({ ...select, edit: true, _id, full_name, phone, old: role, role })}>
+                                            <MenuItem className="flex items-center" onClick={() => setSelect({ ...select, edit: true, _id, full_name, phone, old: role, role, balance })}>
                                                 <BiPencil className="text-[20px] mr-[10px]" /> Taxrirlash
                                             </MenuItem>
                                             <MenuItem className="flex items-center text-red-800" onClick={() => setSelect({ ...select, del: true, _id, full_name })}>
@@ -71,7 +72,7 @@ function Operators() {
                             </div>
                         );
                     }) :
-                    operators.map(({ _id, full_name, phone, role }, index) => {
+                    operators.map(({ _id, full_name, phone, role, balance }, index) => {
                         return (
                             full_name?.toLowerCase()?.includes(search.toLowerCase()) || phone?.toLowerCase()?.includes(search.toLowerCase()) ?
                                 <div key={index} className="flex items-center justify-between w-full rounded-[10px] shadow-[0_10px_20px] shadow-[#0000000b] bg-white p-[10px_20px] mb-[20px] phone:mb-[5px] relative">
@@ -86,7 +87,7 @@ function Operators() {
                                                 </IconButton>
                                             </MenuHandler>
                                             <MenuList>
-                                                <MenuItem className="flex items-center" onClick={() => setSelect({ ...select, edit: true, _id, full_name, phone, old: role, role })}>
+                                                <MenuItem className="flex items-center" onClick={() => setSelect({ ...select, edit: true, _id, full_name, phone, old: role, role, balance })}>
                                                     <BiPencil className="text-[20px] mr-[10px]" /> Taxrirlash
                                                 </MenuItem>
                                                 <MenuItem className="flex items-center text-red-800" onClick={() => setSelect({ ...select, del: true, _id, full_name })}>

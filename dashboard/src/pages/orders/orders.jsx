@@ -37,7 +37,7 @@ function Orders() {
                 <div className="flex items-center justify-center w-[250px] ">
                     <Input type="search" label="Ismi, Raqami, Sanasi" onChange={e => setSearch(e.target.value)} icon={<BiSearch />} />
                 </div>
-                <IconButton onClick={() => setOpenAdd(true)} color="green" className="text-[30px] rounded-full">
+                <IconButton disabled={auth?.role === 'creator'} onClick={() => setOpenAdd(true)} color="green" className="text-[30px] rounded-full">
                     <BiPlusCircle />
                 </IconButton>
             </div>

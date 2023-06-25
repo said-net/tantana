@@ -18,6 +18,7 @@ import Partners from "./pages/partners/partners";
 import PartnerOrders from "./pages/partners/partnerorders";
 import PartnerClients from "./pages/partners/clients";
 import PartnerNotes from "./pages/partners/notes";
+import Educations from "./pages/educations/educations";
 function Main() {
     const { refresh, adminId, role } = useSelector(e => e.auth);
     const dp = useDispatch();
@@ -54,6 +55,7 @@ function Main() {
                 <Routes>
                     {role === 'creator' || role === 'operator' ? <Route path="/" element={<Dashboard />} /> : <Route path="/" element={<Partners />} />}
                     {role === 'creator' || role === 'operator' ? <Route path="/notes" element={<Notes />} /> : <Route path="/notes" element={<PartnerNotes />} />}
+                    {role === 'creator' || role === 'operator' ? <Route path="/educations" element={<Educations />} /> : null}
                     {role === 'creator' ? <Route path="/admins" element={<Operators />} /> : null}
                     {role === 'creator' ? <Route path="/services" element={<Services />} /> : null}
                     {role === 'creator' || role === 'operator' ? <Route path="/orders" element={<Orders />} /> : <Route path="/orders" element={<PartnerOrders />} />}

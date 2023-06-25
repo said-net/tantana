@@ -27,7 +27,7 @@ module.exports = {
         $clients.forEach((c) => {
             $modded.push({
                 ...c._doc,
-                created: moment.unix(c.created).format("DD.MM.yyyy HH:mm")
+                created: !c?.created?"Eski baza":moment.unix(c.created).format("DD.MM.yyyy HH:mm")
             });
         })
         res.send({
@@ -37,17 +37,18 @@ module.exports = {
     },
     getFromPartners: async (req, res) => {
         try {
-            const $clients = await clientModel.find().populate('from', 'full_name phone role')
+            const $clients = await clientModel.find().populate('from', 'full_name phone role created')
             const $partners = await adminModel.find({ role: 'partner' });
             const $modded = [];
-            $clients.forEach(({ _id, name, from, phone, location }) => {
+            $clients.forEach(({ _id, name, from, phone, location, created }) => {
                 if (from.role === 'partner') {
                     $modded.push({
                         _id,
                         name,
                         phone,
                         location,
-                        from
+                        from,
+                        created: !created?"Eski baza":moment.unix(created).format("DD.MM.yyyy HH:mm")
                     });
                 }
             });
@@ -57,7 +58,7 @@ module.exports = {
                 partners: $partners
             });
         } catch (error) {
-            console.log(err);
+            console.log(error);
             res.send({
                 ok: false,
 

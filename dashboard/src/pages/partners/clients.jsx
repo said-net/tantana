@@ -42,7 +42,7 @@ function PartnerClients() {
                 <div className="flex items-center justify-center w-[250px] ">
                     <Input type="search" label="Ismi, Raqami, Manzili" onChange={e => setSearch(e.target.value)} icon={<BiSearch />} />
                 </div>
-                {isLoad && partners[0] && auth?.role === 'operator' ?
+                {isLoad && partners[0] && auth?.role !== 'partner' ?
                     <div className="flex items-center justify-center w-[250px] tablet2:mb-[10px] tablet2:w-[80%]">
                         <Select onChange={e => setFilter(e)} label={"Hamkor tanlash"}>
                             {

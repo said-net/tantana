@@ -1,5 +1,5 @@
 import { Badge, Chip, IconButton, Menu, MenuHandler, MenuItem, MenuList } from "@material-tailwind/react";
-import { BiBox, BiExit, BiMenuAltRight, BiUserCircle, BiUserPlus } from "react-icons/bi";
+import { BiBook, BiBox, BiExit, BiMenuAltRight, BiUserCircle, BiUserPlus } from "react-icons/bi";
 import { AiFillBook, AiFillDashboard, AiFillPhone, AiFillPlusCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -82,6 +82,10 @@ function Navbar() {
                             <MenuItem className="flex text-[20px] items-center uppercase text-green-700" onClick={() => nv('/clients')}>
                                 <BiUserCircle className="mr-[10px]" />
                                 Haridorlar
+                            </MenuItem>
+                            <MenuItem className="flex text-[20px] items-center uppercase text-green-700" onClick={() => nv('/educations')}>
+                                <BiBook className="mr-[10px]" />
+                                Ta'lim
                             </MenuItem>
                             {admin?.role === 'operator' || admin?.role === 'creator' ?
                                 <MenuItem className="flex text-[20px] items-center uppercase text-orange-700" onClick={() => nv('/partner-clients')}>

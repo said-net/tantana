@@ -6,6 +6,7 @@ import { API } from "../../cfg";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setRefreshOperator } from "../../manager/operatorManager";
+import Formatter from "../../components/formatter";
 
 function OperatorEdit({ select, setSelect }) {
     const [disabled, setDisablet] = useState(false);
@@ -38,6 +39,11 @@ function OperatorEdit({ select, setSelect }) {
                     <h1 className="text-[20px] text-blue-gray-800">{select.old === 'operator' ? "OPERATORNI" : "HAMKORNI"} TAXRIRLASH</h1>
                 </DialogHeader>
                 <DialogBody className="w-full">
+
+                    <div className="flex items-center justify-center w-full mb-[10px]">
+                        <h1 className="w-full">Balansida: {!select?.balance ? "***" : <Formatter value={select?.balance} />} so'm
+                        </h1>
+                    </div>
                     <div className="flex items-center justify-center w-full mb-[10px]">
                         <Input disabled={disabled} value={select.full_name} label="F.I ni kiriting!" required icon={<BiUser />} onChange={e => setSelect({ ...select, full_name: e.target.value })} />
                     </div>
@@ -59,7 +65,7 @@ function OperatorEdit({ select, setSelect }) {
                         Bekor qilish
                     </Button>
                     <Button disabled={select?.full_name?.length < 3 || select?.phone?.length !== 13 || disabled || (select?.password && select?.password?.length < 6)} variant="gradient" color="green" className="ml-[10px]" onClick={Submit}>
-                        {!disabled ? "Qo'shish" : <><Spinner /></>}
+                        {!disabled ? "Saqlash" : <><Spinner /></>}
                     </Button>
                 </DialogFooter>
             </div>

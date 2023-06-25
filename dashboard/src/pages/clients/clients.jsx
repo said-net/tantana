@@ -13,6 +13,7 @@ function Clients() {
     const [clients, setClients] = useState([]);
     const [isLoad, setIsLoad] = useState(false);
     // eslint-disable-next-line
+    const { auth } = useSelector(e => e)
     const [search, setSearch] = useState('');
     const { refresh } = useSelector(e => e.client);
     // eslint-disable-next-line
@@ -40,7 +41,7 @@ function Clients() {
                 <div className="flex items-center justify-center w-[250px] ">
                     <Input type="search" label="Ismi, Raqami, Manzili" onChange={e => setSearch(e.target.value)} icon={<BiSearch />} />
                 </div>
-                <IconButton onClick={() => setOpenAdd(true)} color="green" className="text-[30px] rounded-full">
+                <IconButton disabled={auth?.role === 'creator'} onClick={() => setOpenAdd(true)} color="green" className="text-[30px] rounded-full">
                     <BiPlusCircle />
                 </IconButton>
             </div>

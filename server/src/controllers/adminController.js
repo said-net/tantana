@@ -1,6 +1,7 @@
 const md5 = require("md5");
 const adminModel = require("../models/adminModel");
 const phoneCheck = require('phone');
+const orderModel = require("../models/orderModel");
 module.exports = {
     signin: async (req, res) => {
         const { phone, password, check } = req.body;
@@ -90,7 +91,7 @@ module.exports = {
                         role
                     }
                 });
-            }).catch(err=>{
+            }).catch(err => {
                 console.log(err);
                 res.send({
                     ok: false,
@@ -108,9 +109,28 @@ module.exports = {
         } else {
             const $admins = await adminModel.find({ role: 'operator', hidden: false });
             const $partners = await adminModel.find({ role: 'partner', hidden: false });
+            const $orders = await orderModel.find({ month: new Date().getMonth(), year: new Date().getFullYear(), from: req.admin.adminId });
+            const $modAdmins = [];
+            for (let admin of $admins) {
+                if (admin.role === 'operator') {
+                    const $orders = await orderModel.find({ month: new Date().getMonth(), year: new Date().getFullYear(), from: admin._id });
+                    let balance = 0;
+                    $orders.forEach(o => {
+                        if (o.status === 'success') {
+                            o.services.forEach(({ price }) => {
+                                balance += Math.floor(price);
+                            });
+                        } else if (o.status === 'pending') {
+                            balance += Math.floor(o.mortgage);
+                        }
+                    });
+                    $modAdmins.push({ ...admin._doc, balance: balance * 0.05 });
+                }
+            }
+
             res.send({
                 ok: true,
-                data: [...$admins, ...$partners]
+                data: [...$modAdmins, ...$partners]
             });
         }
     },

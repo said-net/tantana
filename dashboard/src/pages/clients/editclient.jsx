@@ -36,6 +36,7 @@ function ClientEdit({ select, setSelect }) {
                     <p>Ismi: {!isLoad ? <Spinner /> : select?.name}</p>
                     <p onClick={() => window.location.href = 'tel:' + select?.phone}>Raqami: {!isLoad ? <Spinner /> : select?.phone}</p>
                     <p>Manzili: {!isLoad ? <Spinner /> : select?.location}</p>
+                    <p>Kiritilgan: {!isLoad ? <Spinner /> : select?.created}</p>
                     {
                         role === 'partner' ? null :
                             <>
