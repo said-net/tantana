@@ -1,19 +1,57 @@
-import { Button, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Option, Select } from "@material-tailwind/react";
+import { Button, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Option, Select, Switch } from "@material-tailwind/react";
 import axios from "axios";
-import { useState } from "react";
-import { BiHome, BiPhone, BiUser } from "react-icons/bi";
+import { useEffect, useState } from "react";
+import { BiHome, BiMoney, BiPhone, BiUser } from "react-icons/bi";
 import { FaUsers } from "react-icons/fa";
 import { API } from "../../cfg";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setRefreshOperator } from "../../manager/operatorManager";
 import Cities from '../../components/cities.json';
 import Regions from '../../components/regions.json';
+import Formatter from "../../components/formatter";
+import { setRefreshOrder } from "../../manager/orderManager";
 function EducationAdd({ open, setOpen }) {
-    const [state, setState] = useState({ type: '', region: '', city: '', education: '', class_room: '', teacher: '',phone:'+998', students: 0, services: '', mortgage: 0, price: 0 });
+    const [state, setState] = useState({ type: '', region: '', city: '', education: '', class_room: '', teacher: '', phone: '+998', students: 0, services: [], mortgage: 0, price: 0, date: '' });
     const [disabled, setDisablet] = useState(false);
+
+    const [services, setServices] = useState([]);
     const dp = useDispatch();
-    console.log(state);
+    useEffect(() => {
+        axios(`${API}/service/getall`, {
+            headers: {
+                'x-auth-token': `X-Checker ${localStorage.getItem('access')}`
+            }
+        }).then(res => {
+            const { ok, data } = res.data;
+            if (ok) {
+                setServices(data);
+            }
+        });
+    }, []);
+    function addService(s, type) {
+        const { services: ser } = state;
+        if (type) {
+            ser.push({ ...s, price: 0 });
+            setState({ ...state, services: ser, });
+        } else {
+            let filtered = ser.filter(e => { return e._id !== s._id });
+            setState({ ...state, services: filtered, });
+        }
+    }
+    function addServicePrice(price, _id) {
+        const service = state?.services?.find(e => e._id === _id);
+        console.log(service);
+        let filtered = state?.services.filter(e => { return e._id !== _id });
+        setState({ ...state, services: [...filtered, { ...service, price }] });
+        // console.log(state.services);
+    }
+    useEffect(() => {
+        let p = 0;
+        state?.services?.forEach(({ price }) => {
+            p += +price
+        });
+        setState({ ...state, price: p });
+    }, [state.services]);
     function Submit() {
         setDisablet(true)
         axios.post(`${API}/admin/create-admin`, state, {
@@ -27,9 +65,9 @@ function EducationAdd({ open, setOpen }) {
                 toast.error(msg);
             else {
                 toast.success(msg);
-                setState({ full_name: '', phone: '+998', password: '', role: '' });
+                setState({type: '', region: '', city: '', education: '', class_room: '', teacher: '', phone: '+998', students: 0, services: [], mortgage: 0, price: 0 });
                 setOpen(false);
-                dp(setRefreshOperator());
+                dp(setRefreshOrder());
             }
         }).catch(() => {
             setDisablet(false);
@@ -110,6 +148,60 @@ function EducationAdd({ open, setOpen }) {
                                 <div className="flex items-center justify-center w-full mb-[10px]">
                                     <Input disabled={disabled} value={state.phone} label="Rahbar raqami" required icon={<BiPhone />} onChange={e => setState({ ...state, phone: e.target.value })} />
                                 </div> : null
+                        }
+                        {
+                            state.teacher ?
+                                <div className="flex items-center justify-center w-full mb-[10px]">
+                                    <Input type="date" disabled={disabled} label="Qaysi sanaga" required  onChange={e => setState({ ...state, date: e.target.value })} />
+                                </div> : null
+                        }
+                        {
+                            services[0] && state?.phone?.length > 12 ?
+                                <>
+                                    <h1 className="border-t w-full text-center">Barcha hizmatlar: {services.length} ta</h1>
+                                    {
+                                        services.map((e, index) => {
+                                            return (
+                                                <label htmlFor={index + 1} key={index} className="w-[95%] mb-[10px] items-center justify-between flex">
+                                                    {e.title}
+                                                    <div className="flex items-center justify-center">
+                                                        {state.services.find(s => s._id === e._id) ?
+                                                            <input className="w-[120px] h-[30px] p-[0_10px] mr-[10px] rounded border border-blue-gray-700" placeholder="Narxi" type="number" onChange={i => { addServicePrice(i.target.value.trim(), e._id) }} /> : null
+                                                        }
+                                                        <Switch checked={state?.services?.find(ss => ss._id === e._id)} id={index + 1} onChange={(c) => addService(e, c.target.checked)} />
+                                                    </div>
+                                                </label>
+                                            )
+                                        })
+                                    }
+                                    <div className="flex items-center justify-center w-full mb-[10px]">
+                                        <Input disabled={disabled} type="number" label="Oldindan to'lov(Zaklad)" required onChange={e => setState({ ...state, mortgage: e.target.value.trim() })} value={state.mortgage} icon={<BiMoney />} />
+                                    </div>
+                                </> : null
+                            // <p>Hizmatlar mavjud emas!</p>
+                        }
+                        {
+                            state.services[0] ?
+                                <>
+                                    <h1 className="border-t w-full text-center">Qo'shilgan hizmatlar: {state?.services?.length} ta</h1>
+                                    {
+                                        state?.services?.map((s, key) => {
+                                            return (
+                                                <div key={key} className="flex items-center justify-between w-full">
+                                                    <p>{key + 1}: {s.title}</p>
+                                                    <p><b><Formatter value={s.price} /></b></p>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                    <h1 className="w-full flex items-center justify-between py-[10px] border-y">Jami hizmatlar narxi: <b><Formatter value={isNaN(state.price) ? '0' : state.price} /></b></h1>
+                                </> : null
+                            // <h1>Hizmatlar qo'shilmadi!</h1>
+                        }
+                        <h1 className="w-full flex items-center justify-between py-[10px] border-b">Oldindan to'lov(Zaklad): <b><Formatter value={state.mortgage} /></b></h1>
+                        {state.price > 0 ?
+                            <h1 className="w-full flex items-center justify-between py-[10px] border-b">Qolgan to'lov: <b><Formatter value={state.price - state.mortgage} /></b></h1>
+                            : null
                         }
                     </div>
                 </DialogBody>
