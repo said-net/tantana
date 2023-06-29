@@ -54,7 +54,7 @@ function EducationAdd({ open, setOpen }) {
     }, [state.services]);
     function Submit() {
         setDisablet(true)
-        axios.post(`${API}/admin/create-admin`, state, {
+        axios.post(`${API}/education/create`, state, {
             headers: {
                 'x-auth-token': `X-Checker ${localStorage.getItem('access')}`
             }

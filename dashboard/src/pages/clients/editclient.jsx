@@ -37,7 +37,7 @@ function ClientEdit({ select, setSelect }) {
                     <p onClick={() => window.location.href = 'tel:' + select?.phone}>Raqami: {!isLoad ? <Spinner /> : select?.phone}</p>
                     <p>Manzili: {!isLoad ? <Spinner /> : select?.location}</p>
                     <p>Kiritilgan: {!isLoad ? <Spinner /> : select?.created}</p>
-                    {
+                    {/* {
                         role === 'partner' ? null :
                             <>
                                 <h1 className="text-[20px] font-bold text-blue-gray-700 mt-[10px] border-t">BUYURTMALARI</h1>
@@ -45,7 +45,7 @@ function ClientEdit({ select, setSelect }) {
                                 <p>Bekor qilingan: {!isLoad ? <Spinner /> : orders.filter(e => e.status === 'reject').length} ta</p>
                                 <p>Kutulayotgan: {!isLoad ? <Spinner /> : orders.filter(e => e.status === 'pending').length} ta</p>
                             </>
-                    }
+                    } */}
                     {role === 'creator' ?
                         <>
                             <h1 className="text-[20px] font-bold text-blue-gray-700 mt-[10px] border-t">KIM TOMONIDAN QO'SHILGAN</h1>

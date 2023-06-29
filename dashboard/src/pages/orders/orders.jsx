@@ -86,7 +86,7 @@ function Orders() {
                                 {!search ?
                                     state?.map((o, index) => {
                                         return (
-                                            <div key={index} className="flex items-center justify-between w-full rounded-[10px] shadow-[0_10px_20px] shadow-[#0000000b] h-[90px] bg-white p-[10px_20px] mb-[20px] relative phone:mb-[10px] flex-col hover:shadow-xl">
+                                            <div key={index} className={`flex items-center justify-between w-full rounded-[10px] shadow-[0_10px_20px] shadow-[#0000000b] h-[90px] bg-white p-[10px_20px] mb-[20px] relative phone:mb-[10px] flex-col hover:shadow-xl border ${o?.status === 'reject' ? 'border-red-500' : o?.status === 'note' ? 'border-orange-500' : o?.status === 'pending' ? 'border-blue-500' : 'border-green-500'}`}>
                                                 <div className="flex items-center justify-between w-full">
                                                     {
                                                         o?.status === 'reject' ?
