@@ -51,6 +51,7 @@ function EducationAdd({ open, setOpen }) {
             p += +price
         });
         setState({ ...state, price: p });
+        // eslint-disable-next-line
     }, [state.services]);
     function Submit() {
         setDisablet(true)

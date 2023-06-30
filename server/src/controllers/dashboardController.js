@@ -1,3 +1,4 @@
+const educationModel = require("../models/educationModel");
 const orderModel = require("../models/orderModel");
 const partnerOrderModel = require("../models/partnerOrderModel");
 
@@ -24,6 +25,8 @@ module.exports = {
             const { date } = req.query;
             const d = !date ? { month: new Date().getMonth(), year: new Date().getFullYear() } : { month: date.split('-')[1] - 1, year: date.split('-')[0] };
             const $orders = await (req.admin.role === 'operator' ? orderModel.find({ month: d.month, year: d.year, from: req.admin.adminId }) : orderModel.find({ month: d.month, year: d.year }));
+
+            const $educations = await (req.admin.role === 'operator' ? educationModel.find({ month: d.month, year: d.year, from: req.admin.adminId }) : educationModel.find({ month: d.month, year: d.year }));
             let data = {
                 success: 0,
                 reject: 0,
@@ -38,6 +41,24 @@ module.exports = {
                         data.payed += Math.floor(price);
                     });
                 } else if (o.status === 'reject') {
+                    data.reject += 1;
+                } else if (o.status === 'pending') {
+                    data.pending += 1;
+                    data.payed += Math.floor(o.mortgage);
+                    o.services.forEach(({ price }) => {
+                        data.comming_pay += Math.floor(price); 
+                    });
+                    data.comming_pay -= Math.floor(o.mortgage);
+                }
+            });
+
+            $educations.forEach((o) => {
+                if (o.status === 'success') {
+                    data.success += 1;
+                    o.services.forEach(({ price }) => {
+                        data.payed += Math.floor(price);
+                    });
+                } else if (o.status === 'rejected') {
                     data.reject += 1;
                 } else if (o.status === 'pending') {
                     data.pending += 1;

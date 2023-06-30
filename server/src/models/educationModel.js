@@ -1,4 +1,4 @@
-module.exports = require('mongoose').model('Eductaion', {
+module.exports = require('mongoose').model('Education', {
     client: {
         type: require('mongoose').Schema.ObjectId,
         ref: 'Client'

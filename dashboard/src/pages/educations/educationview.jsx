@@ -1,20 +1,48 @@
 import { Button, Chip, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Option, Select } from "@material-tailwind/react";
 import { API } from "../../cfg";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Cities from '../../components/cities.json';
 import Regions from '../../components/regions.json';
 import Formatter from "../../components/formatter";
 import { setRefreshOrder } from "../../manager/orderManager";
+import axios from "axios";
+import { useState } from "react";
 function EducationView({ state, setState }) {
-
-    const disabled = true;
+    const [disBtn, setDisBtn] = useState(false);
+    const { auth } = useSelector(e => e);
     const dp = useDispatch();
+    function setStatus(status) {
+        setDisBtn(true);
+        axios.put(`${API}/education/set-status/${state?._id}/${status}`, {}, {
+            headers: {
+                'x-auth-token': `X-Checker ${localStorage.getItem('access')}`
+            }
+        }).then((res) => {
+            const { ok, msg } = res.data;
+            setDisBtn(false);
+            if (!ok) {
+                toast.warning(msg);
+            } else {
+                toast.success(msg);
+                dp(setRefreshOrder());
+                setState({});
+            }
+        }).catch(() => {
+            toast.warning("Aloqani tekshirib qayta urunib ko'ring!");
+        })
+    }
+    const disabled = true;
+
     return (
         <Dialog open={state?._id} size="xxl" className="flex items-center justify-center bg-[#0000002a] backdrop-blur-[10px]">
             <div className="flex items-center justify-start flex-col w-[500px] p-[10px] rounded-xl bg-white shadow-lg tablet2:w-[95%]">
-                <DialogHeader className="w-full">
+                <DialogHeader className="w-full flex-col justify-start items-start">
                     <h1 className="text-[20px] text-blue-gray-800">TA'LIM UCHUN HIZMAT</h1>
+                    {auth?.role === 'creator' ?
+                        <h1 className="text-[13px]">{state?.from_name}</h1>
+                        : null
+                    }
                 </DialogHeader>
                 <DialogBody className="w-full h-[400px] overflow-y-scroll border-y">
                     {/* <div className="flex items-center justify-center w-full mb-[10px]">
@@ -79,14 +107,16 @@ function EducationView({ state, setState }) {
                         }
                     </div>
                     {
-                        state?.status === 'pending' ?
+                        state?.status === 'pending' && auth?.role === 'creator' ?
                             <div className="flex items-center justify-between w-full mt-[10px]">
-                                <Button color="red">Rad etildi</Button>
-                                <Button color="green">Bajarildi</Button>
+                                <Button disabled={disBtn} onClick={() => { setStatus('rejected') }} color="red">Rad etildi</Button>
+                                <Button disabled={disBtn} onClick={() => { setStatus('success') }} color="green">Bajarildi</Button>
                             </div> :
                             state?.status === 'rejected' ?
-                                <Chip color="red">Rad etilgan</Chip> :
-                                <Chip color="green">Bajarilgan</Chip>
+                                <Chip color="red" value="Rad etildi" /> :
+                                state?.status === 'success' ?
+                                    <Chip color="green" value="Bajarilgan" /> :
+                                    <Chip color="blue" value="Jarayonda" />
                     }
                 </DialogBody>
                 <DialogFooter className="w-full">

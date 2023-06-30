@@ -94,5 +94,27 @@ module.exports = {
                 data: $modded?.reverse()
             })
         }
+    },
+    setStatus: async (req,res)=>{
+        const {id, status} = req.params;
+        const $order = await educationModel.findById(id);
+        if(!$order){
+            res.send({
+                ok: false,
+                msg: "Buyurtma topilmadi!"
+            });
+        }else{
+            $order.set({status}).save().then(()=>{
+                res.send({
+                    ok: true,
+                    msg: "O'zgarish saqlandi!"
+                });
+            }).catch(()=>{
+                res.send({
+                    ok: false,
+                    msg: "Qayta urunib ko'ring!"
+                });
+            })
+        }
     }
 }
